@@ -1,0 +1,34 @@
+<div id="first_container" class="container">
+  <form action="/categories/" method="post">
+    <p>
+      Add category:
+      <input name="name" />
+      <input type="submit" value="Add" />
+    </p>
+  </form>
+
+
+  <% @recipients.each do |recipient| %>
+    <form method="post">
+      <input type="hidden" name="recipient" value="<%== recipient.id %>" />
+      <div>
+        <h4>
+          <%== recipient.name %>
+
+          <small>
+            Exempel:
+            <% trans = recipient.designated_by.first.transactions.first %>
+            <%== trans.bookkept_at %>
+            <%== trans.direction == 'outgoing' ? '-' : '' %><%== trans.amount %>
+          </small>
+        </h4>
+
+        <% @categories.each do |cat| %>
+          <button type="submit" name="category" value="<%== cat.id %>" class="btn btn-default">
+            <%= cat.name %>
+          </button>
+        <% end %>
+      </div>
+    </form>
+  <% end %>
+</div>

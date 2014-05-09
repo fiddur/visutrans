@@ -1,0 +1,19 @@
+<div id="first_container" class="container">
+
+  <h1>Welcome</h1>
+
+  <% unless Transaction.all.first %>
+    <p>
+      You don't have any transactions.  You probably want to import some.  Right now, there is ONE
+      importer, for xlsx-files from SEB (Sweden).  It is run with <code>importers/seb.rb
+      myfile.xlsx</code>.  Some day I will make a webpage for the imports as well =)
+    </p>
+  <% else %>
+    <ul>
+      <li><a href="transactions/day"  >See sums by day  </a></li>
+      <li><a href="transactions/week" >See sums by week </a></li>
+      <li><a href="transactions/month">See sums by month</a></li>
+    </ul>
+  <% end %>
+
+</div>

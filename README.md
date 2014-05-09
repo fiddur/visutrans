@@ -1,4 +1,5 @@
-# Visualize transactions - a web view of your economy
+# Visualize transactions
+— a web view of your economy
 
 This is a small hack to get an overview of the transactions to and from my bank account.
 

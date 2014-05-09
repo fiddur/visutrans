@@ -1,3 +1,4 @@
+# Visualize transactions - a web view of your economy
 
 This is a small hack to get an overview of the transactions to and from my bank account.
 
@@ -17,8 +18,6 @@ well structured.  If others are interrested in using and/or developing it, there
   On linux: `rake install_neo`
   Otherwise, install and put it in vendor/neo4j-community-2.0.3 (if you want rake to start it).
 
-  rake install
-
 - Install the rest
   `rake install`
 
@@ -29,7 +28,7 @@ well structured.  If others are interrested in using and/or developing it, there
 ## Starting and using VisuTrans
 
 `rake start`
-
+Open http://localhost:9292/ (default rackup port).
 
 
 

@@ -27,9 +27,11 @@ well structured.  If others are interrested in using and/or developing it, there
 
 ## Starting and using VisuTrans
 
-`rake start`
-Open http://localhost:9292/ (default rackup port).
-
+- `rake start`
+- Import an export of your transactions from your bank account with `bundle exec ruby
+  importers/seb.rb`
+- Open http://localhost:9292/ (default rackup port) and go to 'Categorize your recipients'.
+- Play around :P  The sum-views take get-parameters from and to with ruby Date-parseable dates.
 
 
 ## Todo

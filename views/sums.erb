@@ -2,122 +2,128 @@
 
   <canvas id="myChart" height="400"></canvas>
 
+</div>
+<div class="container-fluid">
 
-  <div>
-    <% for date in @sums.keys.reverse; sum = @sums[date] %>
-      <div class="row" style="background-color: rgba(86,61,124,.15); border: 1px solid rgba(86,61,124,.2);">
-        <div class="col-md-4"><%== date.to_s %></div>
-        <div class="col-md-8 text-right">
-          <% @categories.to_a.sort_by{|cat|sum[cat.name.to_sym] ? sum[cat.name.to_sym] : 0}.each do |cat| %>
-            <% next unless sum[cat.name.to_sym] > 0 %>
-            <div class="row">
-              <div class="col-md-7 small category-<%= cat.id %>"><%== cat.name %></div>
-              <div class="col-md-1 small">
-                <span style="cursor: pointer" onclick="alert('Hide!')"
-                      title="hide" class="glyphicon glyphicon-eye-open"></span>
-              </div>
-              <div class="col-md-4 small text-right"><%== sprintf('%.2f', sum[cat.name.to_sym]) %></div>
-            </div>
-          <% end %>
+  <table class="table table-responsive table-striped table-condensed">
+    <tr>
+      <th>Category</th>
+      <% for date in @sums.keys; sum = @sums[date] %>
+        <th><%== date.to_s %></th>
+      <% end %>
+      <th>Sum</th>
+      <th>Mean</th>
+    </tr>
 
-          <strong><%== sprintf('%.2f', sum[:sum]) %></strong>
-        </div>
-      </div>
+    <% @categories.to_a.sort_by{|cat| cat.name}.each do |cat| %>
+      <tr>
+        <th class="col-md-7 small category-<%= cat.id %>">
+          <span style="cursor: pointer" onclick="alert('Hide!')"
+                title="hide" class="glyphicon glyphicon-eye-open"></span>
+          <a href="/categories/<%== cat.id %>"><%== cat.name %></a>
+        </th>
+        <% category_sum = 0 %>
+        <% for date in @sums.keys; sum = @sums[date] %>
+          <td class="small text-right"><%== sprintf('%.2f', sum[cat.name.to_sym]) %></td>
+          <% category_sum += sum[cat.name.to_sym] %>
+        <% end %>
+        <td class="text-right"><strong><%== sprintf('%.2f', category_sum) %></strong></td>
+        <td class="text-right"><small><%== sprintf('%.2f', category_sum/@sums.length) %></small></td>
+      </tr>
     <% end %>
-  </div>
+  </table>
+</div>
 
+<script>
+  var width = $('#first_container').innerWidth();
+  $('#myChart').width(width);
+  $('#myChart').attr('width', width);
+  console.log("Set #myChart to width " + width);
 
-  <script>
-    var width = $('#first_container').innerWidth();
-    $('#myChart').width(width);
-    $('#myChart').attr('width', width);
-    console.log("Set #myChart to width " + width);
+  var colours = [
+    "#800000",
+    "#008000",
+    "#000080",
+    "#FF0000",
+    "#00FF00",
+    "#0000FF",
+    "#FF00FF",
+    "#00FFFF",
+    "#FFFF00",
+    "#808000",
+    "#800080",
+    "#008080",
+    "#800080",
+    "#FF8000",
+    "#FF0080",
+    "#00FF80",
+    "#80FF00",
+    "#8000FF",
+    "#0080FF",
+    "#400000",
+    "#004000",
+    "#000040",
+    "#C00000",
+    "#00C000",
+    "#0000C0",
+    "#C000C0",
+    "#00C0C0",
+    "#C0C000",
+    "#404000",
+    "#400040",
+    "#004040",
+    "#400040",
+    "#C04000",
+    "#C00040",
+    "#00C040",
+    "#40C000",
+    "#4000C0",
+    "#0040C0"
+  ]
 
-    var colours = [
-      "#800000",
-      "#008000",
-      "#000080",
-      "#FF0000",
-      "#00FF00",
-      "#0000FF",
-      "#FF00FF",
-      "#00FFFF",
-      "#FFFF00",
-      "#808000",
-      "#800080",
-      "#008080",
-      "#800080",
-      "#FF8000",
-      "#FF0080",
-      "#00FF80",
-      "#80FF00",
-      "#8000FF",
-      "#0080FF",
-      "#400000",
-      "#004000",
-      "#000040",
-      "#C00000",
-      "#00C000",
-      "#0000C0",
-      "#C000C0",
-      "#00C0C0",
-      "#C0C000",
-      "#404000",
-      "#400040",
-      "#004040",
-      "#400040",
-      "#C04000",
-      "#C00040",
-      "#00C040",
-      "#40C000",
-      "#4000C0",
-      "#0040C0"
-    ]
-
-    var datasets = [
-      // Black line at 0
-      {
-        fillColor : "rgba(0,0,0,0)",
-        strokeColor : "rgba(0,0,0,1)",
-        pointColor : "rgba(0,0,0,0)",
-        pointStrokeColor : "rgba(0,0,0,0)",
-        data : <%= @sums.map{|date,sum|0}.to_json %>
-      }
-    ];
-
-    datasets.push({
+  var datasets = [
+    // Black line at 0
+    {
       fillColor : "rgba(0,0,0,0)",
       strokeColor : "rgba(0,0,0,1)",
-      pointColor : "rgba(0,0,0,1)",
+      pointColor : "rgba(0,0,0,0)",
+      pointStrokeColor : "rgba(0,0,0,0)",
+      data : <%= @sums.map{|date,sum|0}.to_json %>
+    }
+  ];
+
+  datasets.push({
+    fillColor : "rgba(0,0,0,0)",
+    strokeColor : "rgba(0,0,0,1)",
+    pointColor : "rgba(0,0,0,1)",
+    pointStrokeColor : "#fff",
+    data : <%= @sums.map{|date,sum|sum[:sum]}.to_json %>
+  });
+
+  var colour;
+
+  <% @categories.each do |cat| %>
+    <% #@skip_categories.each do |skip_id| %>
+      <% #next 2 if cat.id == skip_id %>
+    <% #end %>
+    colour = colours.pop();
+    $('.category-<%= cat.id %>').css('color', colour);
+
+    datasets.push({
+      fillColor : "rgba(220,220,220,0)",
+      strokeColor : colour,
+      pointColor : colour,
       pointStrokeColor : "#fff",
-      data : <%= @sums.map{|date,sum|sum[:sum]}.to_json %>
+      data : <%= @sums.map{|date,sum|sum[cat.name.to_sym]}.to_json %>
     });
+  <% end %>
 
-    var colour;
+  var data = {
+    labels : <%= @sums.keys.to_json %>,
+    datasets : datasets
+  };
 
-    <% @categories.each do |cat| %>
-      <% #@skip_categories.each do |skip_id| %>
-        <% #next 2 if cat.id == skip_id %>
-      <% #end %>
-      colour = colours.pop();
-      $('.category-<%= cat.id %>').css('color', colour);
-
-      datasets.push({
-        fillColor : "rgba(220,220,220,0)",
-        strokeColor : colour,
-        pointColor : colour,
-        pointStrokeColor : "#fff",
-        data : <%= @sums.map{|date,sum|sum[cat.name.to_sym]}.to_json %>
-      });
-    <% end %>
-
-    var data = {
-      labels : <%= @sums.keys.to_json %>,
-      datasets : datasets
-    };
-
-    //Get the context of the canvas element we want to select
-    var ctx = document.getElementById("myChart").getContext("2d");
-    var myNewChart = new Chart(ctx).Line(data);
-  </script>
-</div>
+  //Get the context of the canvas element we want to select
+  var ctx = document.getElementById("myChart").getContext("2d");
+  var myNewChart = new Chart(ctx).Line(data);
+</script>

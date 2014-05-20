@@ -1,0 +1,13 @@
+<div class="container">
+  <h1><%== @category.name %></h1>
+
+  <table class="table">
+    <% @category.recipients.map{|recipient| recipient.designated_by}.flatten.map{|desig| desig.transactions}.flatten.sort_by{|transaction| transaction.payment_date}.each do |transaction| %>
+      <tr>
+        <td><%== transaction.payment_date %></td>
+        <td><%== transaction.recipient_text %></td>
+        <td class="text-right"><%== transaction.amount %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
